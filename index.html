@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ronald Novela | OOP E-Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Fira+Code:wght@300;400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #070b14;
+      --bg2: #0d1526;
+      --card: #111a2e;
+      --card2: #0f1929;
+      --cyan: #00e5ff;
+      --purple: #a855f7;
+      --green: #22d3ee;
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --border: rgba(0,229,255,0.15);
+      --glow: 0 0 30px rgba(0,229,255,0.15);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ─── NOISE TEXTURE OVERLAY ─── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      backdrop-filter: blur(20px);
+      background: rgba(7,11,20,0.8);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: var(--cyan);
+      letter-spacing: 0.05em;
+    }
+
+    .nav-logo span { color: var(--purple); }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      transition: color 0.3s;
+      position: relative;
+    }
+
+    .nav-links a::before { content: '// '; color: var(--purple); opacity: 0; transition: opacity 0.3s; }
+    .nav-links a:hover::before { opacity: 1; }
+    .nav-links a:hover { color: var(--cyan); }
+
+    /* ─── SECTION WRAPPER ─── */
+    section {
+      position: relative;
+      z-index: 1;
+      padding: 6rem 6vw;
+    }
+
+    /* ─── HERO ─── */
+    #home {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: 5rem;
+      overflow: hidden;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      color: var(--purple);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.2s;
+    }
+
+    .hero-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.8rem, 5vw, 4.5rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.35s;
+    }
+
+    .hero-title .cyan { color: var(--cyan); }
+    .hero-title .purple { color: var(--purple); }
+
+    .hero-desc {
+      font-size: 1rem;
+      color: var(--muted);
+      line-height: 1.8;
+      max-width: 480px;
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.5s;
+    }
+
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.65s;
+    }
+
+    .tag {
+      border: 1px solid var(--border);
+      padding: 0.3rem 0.9rem;
+      border-radius: 999px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      color: var(--cyan);
+      background: rgba(0,229,255,0.05);
+    }
+
+    .hero-badges {
+      display: flex;
+      gap: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.8s;
+    }
+
+    .badge {
+      text-align: center;
+    }
+
+    .badge-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--cyan);
+    }
+
+    .badge-label {
+      font-size: 0.7rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* Profile card */
+    .hero-right {
+      display: flex;
+      justify-content: center;
+      opacity: 0;
+      animation: fadeIn 1s ease forwards 0.4s;
+    }
+
+    .profile-card {
+      position: relative;
+      width: 320px;
+    }
+
+    .profile-card::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      background: linear-gradient(135deg, var(--cyan), var(--purple), var(--cyan));
+      border-radius: 1.5rem;
+      z-index: -1;
+      animation: rotate 4s linear infinite;
+    }
+
+    .profile-inner {
+      background: var(--card);
+      border-radius: 1.4rem;
+      padding: 2.5rem 2rem;
+      text-align: center;
+    }
+
+    .profile-photo-wrap {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      margin: 0 auto 1.5rem;
+      overflow: hidden;
+      border: 3px solid var(--cyan);
+      background: var(--bg2);
+      position: relative;
+    }
+
+    .profile-photo-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Placeholder avatar shown when image fails */
+    .avatar-fallback {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Syne', sans-serif;
+      font-size: 3rem;
+      font-weight: 800;
+      color: var(--cyan);
+      background: linear-gradient(135deg, #0d1526, #1a2744);
+    }
+
+    .profile-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+    }
+
+    .profile-sub {
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-family: 'Fira Code', monospace;
+      margin-bottom: 1.2rem;
+    }
+
+    .profile-traits {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .trait {
+      background: rgba(168,85,247,0.1);
+      border: 1px solid rgba(168,85,247,0.3);
+      border-radius: 999px;
+      padding: 0.2rem 0.7rem;
+      font-size: 0.7rem;
+      color: var(--purple);
+      font-family: 'Fira Code', monospace;
+    }
+
+    /* ─── SECTION HEADER ─── */
+    .section-header {
+      margin-bottom: 3rem;
+    }
+
+    .section-tag {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      color: var(--purple);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+
+    .section-title .accent { color: var(--cyan); }
+
+    .section-line {
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--cyan), var(--purple));
+      margin-top: 1rem;
+      border-radius: 999px;
+    }
+
+    /* ─── MIDTERM SECTION ─── */
+    #midterm { background: var(--bg2); }
+
+    .content-max {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* Subsection cards */
+    .subsection {
+      margin-bottom: 4rem;
+    }
+
+    .subsection-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--cyan);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .subsection-title::before {
+      content: '';
+      width: 4px;
+      height: 1.4rem;
+      background: linear-gradient(180deg, var(--cyan), var(--purple));
+      border-radius: 2px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .card:hover {
+      border-color: rgba(0,229,255,0.35);
+      box-shadow: var(--glow);
+    }
+
+    .card-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+
+    .card-meta {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+
+    .card-body {
+      font-size: 0.9rem;
+      color: #94a3b8;
+      line-height: 1.8;
+    }
+
+    /* Quiz score display */
+    .quiz-score-wrap {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .score-circle {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: conic-gradient(var(--cyan) calc(42/45*360deg), #1e293b 0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .score-circle::before {
+      content: '';
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: var(--card);
+      position: absolute;
+    }
+
+    .score-text {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+
+    .score-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--cyan);
+      line-height: 1;
+    }
+
+    .score-denom {
+      font-size: 0.6rem;
+      color: var(--muted);
+    }
+
+    .quiz-details { flex: 1; }
+    .quiz-img-placeholder {
+      width: 100%;
+      margin-top: 1.5rem;
+      border-radius: 0.75rem;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .quiz-img-placeholder img {
+      width: 100%;
+      display: block;
+    }
+
+    /* Code block */
+    .code-block {
+      background: #0a0f1e;
+      border: 1px solid rgba(0,229,255,0.1);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      overflow-x: auto;
+      margin-top: 1rem;
+    }
+
+    .code-block pre {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.78rem;
+      line-height: 1.7;
+      color: #cbd5e1;
+      white-space: pre;
+    }
+
+    .code-block .kw { color: #c084fc; }
+    .code-block .cm { color: #475569; }
+    .code-block .str { color: #86efac; }
+    .code-block .fn { color: #67e8f9; }
+    .code-block .num { color: #fda4af; }
+
+    /* Output screenshot */
+    .output-img {
+      width: 100%;
+      border-radius: 0.75rem;
+      border: 1px solid var(--border);
+      margin-top: 1rem;
+      display: block;
+    }
+
+    /* Screenshot placeholder */
+    .img-placeholder {
+      width: 100%;
+      height: 220px;
+      border-radius: 0.75rem;
+      border: 1px dashed rgba(0,229,255,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 0.5rem;
+      color: var(--muted);
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      margin-top: 1rem;
+      background: rgba(0,229,255,0.02);
+    }
+
+    /* Grid cards */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 1.5rem;
+    }
+
+    /* Learnings list */
+    .learning-list {
+      list-style: none;
+      margin-top: 0.75rem;
+    }
+
+    .learning-list li {
+      padding: 0.4rem 0;
+      color: #94a3b8;
+      font-size: 0.88rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      line-height: 1.6;
+    }
+
+    .learning-list li::before {
+      content: '▸';
+      color: var(--cyan);
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+
+    /* Reflection box */
+    .reflection {
+      background: rgba(168,85,247,0.07);
+      border-left: 3px solid var(--purple);
+      border-radius: 0 0.5rem 0.5rem 0;
+      padding: 1rem 1.25rem;
+      margin-top: 1rem;
+      font-size: 0.88rem;
+      color: #a78bfa;
+      line-height: 1.8;
+      font-style: italic;
+    }
+
+    /* Exam editable box */
+    .editable-area {
+      background: rgba(0,229,255,0.04);
+      border: 1px dashed rgba(0,229,255,0.4);
+      border-radius: 0.75rem;
+      padding: 2rem;
+      margin-top: 1rem;
+      min-height: 120px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.8;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .editable-area .icon { font-size: 2rem; }
+    .editable-area strong { color: var(--cyan); font-size: 0.85rem; }
+
+    /* ─── FINAL SECTION ─── */
+    #final {
+      text-align: center;
+    }
+
+    .coming-soon {
+      max-width: 500px;
+      margin: 3rem auto 0;
+      padding: 4rem 2rem;
+      border: 1px solid var(--border);
+      border-radius: 1.5rem;
+      background: var(--card);
+    }
+
+    .coming-soon .cs-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
+
+    .coming-soon h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+
+    .coming-soon p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.8;
+    }
+
+    /* ─── CONTACT ─── */
+    #contact { background: var(--bg2); }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      max-width: 900px;
+      margin: 0 auto;
+      align-items: center;
+    }
+
+    .contact-info p {
+      color: var(--muted);
+      line-height: 1.8;
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+    }
+
+    .contact-items {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      font-size: 0.88rem;
+    }
+
+    .contact-item .ci-icon {
+      font-size: 1.2rem;
+      width: 36px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .contact-item .ci-label {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-bottom: 0.1rem;
+    }
+
+    .contact-item .ci-value {
+      color: var(--text);
+      font-size: 0.85rem;
+    }
+
+    .contact-code {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 2rem;
+    }
+
+    .contact-code pre {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      line-height: 1.9;
+      color: #94a3b8;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      padding: 2rem 6vw;
+      text-align: center;
+      border-top: 1px solid var(--border);
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      color: var(--muted);
+      position: relative;
+      z-index: 1;
+    }
+
+    footer span { color: var(--cyan); }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ─── SCROLLBAR ─── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { gap: 1.25rem; }
+      section { padding: 5rem 1.5rem; }
+      .hero-grid { grid-template-columns: 1fr; gap: 3rem; text-align: center; }
+      .hero-desc { margin: 0 auto 2.5rem; }
+      .hero-tags { justify-content: center; }
+      .hero-badges { justify-content: center; }
+      .hero-right { display: none; }
+      .cards-grid { grid-template-columns: 1fr; }
+      .contact-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── NAV ─── -->
+<nav>
+  <div class="nav-logo">RN<span>.</span>dev</div>
+  <ul class="nav-links">
+    <li><a href="#home">Home</a></li>
+    <li><a href="#midterm">Midterm</a></li>
+    <li><a href="#final">Final</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ─── HOME ─── -->
+<section id="home">
+  <div class="hero-grid">
+    <div class="hero-left">
+      <div class="hero-eyebrow">// OOP E-Portfolio &nbsp;•&nbsp; BSIT 2-3</div>
+      <h1 class="hero-title">
+        Hi, I'm<br>
+        <span class="cyan">Ronald</span><br>
+        <span class="purple">Novela</span> 👋
+      </h1>
+      <p class="hero-desc">
+        A BSIT student at the <strong>Polytechnic University of the Philippines</strong>, 
+        exploring Object-Oriented Programming through Java. This e-portfolio showcases 
+        my quizzes, activities, and projects for <strong>COMP 009</strong>.
+      </p>
+      <div class="hero-tags">
+        <span class="tag">Java</span>
+        <span class="tag">OOP</span>
+        <span class="tag">Eclipse IDE</span>
+        <span class="tag">BSIT 2-3</span>
+        <span class="tag">2nd Sem · AY 2025–2026</span>
+      </div>
+      <div class="hero-badges">
+        <div class="badge">
+          <div class="badge-num">42</div>
+          <div class="badge-label">Quiz Score</div>
+        </div>
+        <div class="badge">
+          <div class="badge-num">6+</div>
+          <div class="badge-label">Activities</div>
+        </div>
+        <div class="badge">
+          <div class="badge-num">3</div>
+          <div class="badge-label">Java Programs</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="profile-card">
+        <div class="profile-inner">
+          <div class="profile-photo-wrap">
+            <!-- Replace 'assets/ronald.jpg' with your actual photo filename -->
+            <img src="assets/ronald.jpg" alt="Ronald Novela"
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="avatar-fallback" style="display:none;">RN</div>
+          </div>
+          <div class="profile-name">Ronald S. Novela</div>
+          <div class="profile-sub">BSIT 2-3 &nbsp;|&nbsp; PUP</div>
+          <div class="profile-traits">
+            <span class="trait">Athletic</span>
+            <span class="trait">Curious</span>
+            <span class="trait">Friendly</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── MIDTERM ─── -->
+<section id="midterm">
+  <div class="content-max">
+    <div class="section-header reveal">
+      <div class="section-tag">// section_02</div>
+      <h2 class="section-title">Midterm <span class="accent">Outputs</span></h2>
+      <div class="section-line"></div>
+    </div>
+
+    <!-- ══ QUIZ ══ -->
+    <div class="subsection reveal">
+      <div class="subsection-title">Midterm Quiz</div>
+      <div class="card">
+        <div class="card-title">Midterm Quiz #1</div>
+        <div class="card-meta">COMP 009 | BSIT 2-3 | Available: Apr 15 – Apr 19, 2026 | Time Limit: 45 mins</div>
+        <div class="quiz-score-wrap">
+          <div class="score-circle">
+            <div class="score-text">
+              <div class="score-num">42</div>
+              <div class="score-denom">/ 45</div>
+            </div>
+          </div>
+          <div class="quiz-details">
+            <div class="card-body">
+              Completed in <strong style="color:var(--cyan)">26 minutes</strong> — 
+              scoring <strong style="color:var(--cyan)">42 out of 45 points</strong>. 
+              The quiz covered 45 questions on OOP fundamentals using Java. 
+              Quiz results were locked, but the score reflects a strong grasp 
+              of the concepts discussed in class.
+            </div>
+            <ul class="learning-list" style="margin-top:0.75rem;">
+              <li>Demonstrated understanding of OOP fundamentals</li>
+              <li>Completed well within the 45-minute time limit</li>
+              <li>Scored 93.3% — near-perfect result</li>
+            </ul>
+          </div>
+        </div>
+        <!-- Quiz screenshot -->
+        <div class="quiz-img-placeholder">
+          <img src="assets/quiz-midterm1.png" alt="Midterm Quiz #1 Screenshot"
+               onerror="this.parentElement.innerHTML='<div class=\'img-placeholder\'><span class=\'icon\'>🖼️</span><span>Place your quiz screenshot here</span><strong>assets/quiz-midterm1.png</strong></div>'">
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SEATWORKS ══ -->
+    <div class="subsection reveal">
+      <div class="subsection-title">Midterm Seatworks</div>
+      <div class="cards-grid">
+
+        <!-- Smart Wallet -->
+        <div class="card">
+          <div class="card-title">Smart Wallet System</div>
+          <div class="card-meta">Seatwork | March 25, 2026 | BSIT 2-3</div>
+          <div class="card-body">
+            A console-based Smart Wallet program written in Java that simulates 
+            basic e-wallet operations. Implements a menu-driven interface using 
+            <code style="color:var(--cyan)">while(true)</code> loop and 
+            <code style="color:var(--cyan)">switch-case</code> statements.
+          </div>
+          <ul class="learning-list">
+            <li>View Balance — displays current wallet balance</li>
+            <li>Cash In — accepts deposits with amount validation (must be &gt; 0)</li>
+            <li>Send Money — validates min ₱100 and max ₱1,500 per transaction</li>
+            <li>Exit — shows total successful transaction count</li>
+            <li>Tracks transaction count using a counter variable</li>
+          </ul>
+          <div class="reflection">
+            "The while loop keeps the program running until a specific condition 
+            is met. The switch-case controls menu selection by having each case 
+            correspond to users' menu options. The if-else statement validates 
+            whether a transaction is allowed before execution."
+          </div>
+        </div>
+
+        <!-- Student Age Analyzer -->
+        <div class="card">
+          <div class="card-title">Student Age Analyzer</div>
+          <div class="card-meta">Seatwork | April 15, 2026 | BSIT 2-3</div>
+          <div class="card-body">
+            A Java program that takes a student's name and age as input, 
+            then categorizes them using a separate static method 
+            <code style="color:var(--cyan)">getAgeCategory()</code> — 
+            demonstrating the use of methods in OOP.
+          </div>
+          <ul class="learning-list">
+            <li>Child: age 0–12</li>
+            <li>Teenager: age 13–19</li>
+            <li>Adult: age 20–59</li>
+            <li>Senior Citizen: age 60+</li>
+            <li>Invalid Age: negative or out-of-range values</li>
+          </ul>
+          <div class="code-block">
+<pre><span class="kw">public static</span> <span class="fn">String</span> getAgeCategory(<span class="kw">int</span> age) {
+  <span class="kw">if</span> (age >= <span class="num">0</span> && age <= <span class="num">12</span>) { <span class="kw">return</span> <span class="str">"Child"</span>; }
+  <span class="kw">else if</span> (age >= <span class="num">13</span> && age <= <span class="num">19</span>) { <span class="kw">return</span> <span class="str">"Teenager"</span>; }
+  <span class="kw">else if</span> (age >= <span class="num">20</span> && age <= <span class="num">59</span>) { <span class="kw">return</span> <span class="str">"Adult"</span>; }
+  <span class="kw">else if</span> (age >= <span class="num">60</span>) { <span class="kw">return</span> <span class="str">"Senior Citizen"</span>; }
+  <span class="kw">else</span> { <span class="kw">return</span> <span class="str">"Invalid Age"</span>; }
+}</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ ACTIVITIES ══ -->
+    <div class="subsection reveal">
+      <div class="subsection-title">Midterm Activities</div>
+
+      <!-- About Me -->
+      <div class="card" style="margin-bottom:1.5rem;">
+        <div class="card-title">Activity 1 — About Me</div>
+        <div class="card-meta">Introduction Activity | BSIT 2-3</div>
+        <div class="card-body">
+          A creative introduction activity where I presented myself to the class 
+          through a visual "About Me" sheet. This was our first activity, helping 
+          the professor and classmates get to know each student personally.
+        </div>
+        <ul class="learning-list">
+          <li>Name: Ronald Novela</li>
+          <li>3 words that describe me: <strong style="color:var(--cyan)">Athletic, Curious, Friendly</strong></li>
+          <li>Impression of the professor: Kind, easy to get along with, and considerate of students</li>
+          <li>Goals this year: Cloud Computing &amp; Applications, Full Stack Development, Other Tech Skills</li>
+        </ul>
+      </div>
+
+      <!-- Code Analysis -->
+      <div class="card" style="margin-bottom:1.5rem;">
+        <div class="card-title">Activity 1 — Code Analysis (Variables)</div>
+        <div class="card-meta">OOP Activity | March 13, 2026 | BSIT 2-3</div>
+        <div class="card-body">
+          Analyzed a Java <code style="color:var(--cyan)">Account</code> class to identify variable types, 
+          memory behavior (Stack vs Heap), and how object references work. 
+          This deepened my understanding of how Java manages memory.
+        </div>
+        <div class="code-block">
+<pre><span class="cm">// Part A – Variable Identification</span>
+<span class="cm">// Variable   | Data Type | Variable Type      | Stored In</span>
+<span class="cm">// owner      | String    | Instance Variable   | Heap</span>
+<span class="cm">// balance    | double    | Instance Variable   | Heap</span>
+<span class="cm">// acc1       | Account   | Reference Variable  | Stack</span>
+<span class="cm">// acc2       | Account   | Reference Variable  | Stack</span>
+<span class="cm">// acc3       | Account   | Reference Variable  | Stack</span>
+
+<span class="cm">// Part C – Output</span>
+<span class="cm">// Miguel 15000.0</span>
+<span class="cm">// Diana  388000.0</span>
+<span class="cm">// Miguel 15000.0</span></pre>
+        </div>
+        <ul class="learning-list" style="margin-top:0.75rem;">
+          <li>Instance variables (owner, balance) are stored in the <strong>Heap</strong></li>
+          <li>Reference variables (acc1, acc2, acc3) are stored in the <strong>Stack</strong></li>
+          <li>When acc3 = acc1, no new object is created — both reference the same Heap object</li>
+          <li>Modifying acc3's owner changes the object shared by acc1 as well</li>
+        </ul>
+      </div>
+
+      <!-- Operators Activity -->
+      <div class="card" style="margin-bottom:1.5rem;">
+        <div class="card-title">Activity 2 — Operators in Java</div>
+        <div class="card-meta">OOP Activity | March 13, 2026 | BSIT 2-3</div>
+        <div class="card-body">
+          Created three separate Java programs and one multi-operator program 
+          demonstrating various Java operator types.
+        </div>
+        <div class="cards-grid" style="margin-top:1rem;">
+          <div style="background:var(--card2); border:1px solid var(--border); border-radius:0.75rem; padding:1.25rem;">
+            <div style="font-family:'Fira Code',monospace; font-size:0.75rem; color:var(--cyan); margin-bottom:0.5rem;">1.1 Bitwise Operator</div>
+            <div class="code-block" style="margin-top:0;">
+<pre><span class="kw">int</span> a = <span class="num">11</span>, b = <span class="num">15</span>;
+<span class="kw">int</span> result = a & b; <span class="cm">// AND</span>
+<span class="cm">// Output: Result: 11</span></pre>
+            </div>
+          </div>
+          <div style="background:var(--card2); border:1px solid var(--border); border-radius:0.75rem; padding:1.25rem;">
+            <div style="font-family:'Fira Code',monospace; font-size:0.75rem; color:var(--cyan); margin-bottom:0.5rem;">1.2 Ternary Operator</div>
+            <div class="code-block" style="margin-top:0;">
+<pre><span class="kw">int</span> number = <span class="num">18</span>;
+String result = (number % <span class="num">2</span> == <span class="num">0</span>)
+  ? <span class="str">"Even"</span> : <span class="str">"Odd"</span>;
+<span class="cm">// Output: The number is Even</span></pre>
+            </div>
+          </div>
+          <div style="background:var(--card2); border:1px solid var(--border); border-radius:0.75rem; padding:1.25rem;">
+            <div style="font-family:'Fira Code',monospace; font-size:0.75rem; color:var(--cyan); margin-bottom:0.5rem;">1.3 Assignment Operator</div>
+            <div class="code-block" style="margin-top:0;">
+<pre><span class="kw">int</span> number = <span class="num">10</span>;
+number += <span class="num">5</span>; <span class="cm">// same as number = number + 5</span>
+<span class="cm">// Output: Result: 15</span></pre>
+            </div>
+          </div>
+          <div style="background:var(--card2); border:1px solid var(--border); border-radius:0.75rem; padding:1.25rem;">
+            <div style="font-family:'Fira Code',monospace; font-size:0.75rem; color:var(--cyan); margin-bottom:0.5rem;">Part II — Multi-Operator</div>
+            <div class="code-block" style="margin-top:0;">
+<pre><span class="kw">int</span> x=<span class="num">8</span>, y=<span class="num">4</span>, z=<span class="num">3</span>;
+result1 = x + y;        <span class="cm">// arithmetic</span>
+result2 = x * z;        <span class="cm">// arithmetic</span>
+result3 = y += <span class="num">3</span>;       <span class="cm">// assignment</span>
+result4 = z++ + ++z;    <span class="cm">// tricky unary</span>
+result5 = x > y;        <span class="cm">// relational</span>
+result6 = (x>y)&&(y>z); <span class="cm">// logical</span>
+<span class="cm">// Output: 12, 24, 7, 8, false, false</span></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Basic ATM -->
+      <div class="card" style="margin-bottom:1.5rem;">
+        <div class="card-title">Activity 3 — Basic ATM System</div>
+        <div class="card-meta">Java Program | BSIT 2-3 | Eclipse IDE</div>
+        <div class="card-body">
+          A menu-driven ATM simulation using a <code style="color:var(--cyan)">do-while</code> loop 
+          and <code style="color:var(--cyan)">switch-case</code>. Users can check balance, 
+          deposit, and withdraw — with input validation and a ₱2,000 withdrawal limit per transaction.
+        </div>
+        <div class="code-block">
+<pre><span class="kw">double</span> balance = <span class="num">5000</span>;
+<span class="kw">do</span> {
+  <span class="cm">// Display menu options 1–4</span>
+  <span class="kw">switch</span> (choice) {
+    <span class="kw">case</span> <span class="num">1</span>: <span class="cm">// Check Balance</span>
+    <span class="kw">case</span> <span class="num">2</span>: balance += depositAmount; <span class="cm">// Deposit</span>
+    <span class="kw">case</span> <span class="num">3</span>: <span class="cm">// Withdraw — limit: ₱2,000 max</span>
+      <span class="kw">if</span> (withdrawalAmount > <span class="num">2000</span>)
+        System.out.println(<span class="str">"Withdrawal limit exceeded!"</span>);
+      <span class="kw">else</span> balance -= withdrawalAmount;
+    <span class="kw">case</span> <span class="num">4</span>: <span class="cm">// Exit</span>
+  }
+} <span class="kw">while</span> (choice != <span class="num">4</span>);</pre>
+        </div>
+        <ul class="learning-list" style="margin-top:0.75rem;">
+          <li>do-while ensures the menu displays at least once before checking exit condition</li>
+          <li>switch-case cleanly separates the four transaction types</li>
+          <li>Input validation prevents invalid deposits and over-limit withdrawals</li>
+        </ul>
+        <!-- ATM Screenshots -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:1rem;">
+          <img src="assets/atm-output1.png" alt="ATM Output - Check Balance and Deposit" class="output-img"
+               onerror="this.outerHTML='<div class=\'img-placeholder\' style=\'margin-top:0;\'><span>🖥️</span><span>ATM Screenshot 1</span><strong>assets/atm-output1.png</strong></div>'">
+          <img src="assets/atm-output2.png" alt="ATM Output - Withdraw and Exit" class="output-img"
+               onerror="this.outerHTML='<div class=\'img-placeholder\' style=\'margin-top:0;\'><span>🖥️</span><span>ATM Screenshot 2</span><strong>assets/atm-output2.png</strong></div>'">
+        </div>
+        <div class="reflection">
+          "This activity helped me understand how loops maintain program flow and how 
+          switch-case makes code cleaner and easier to manage for menu-based programs."
+        </div>
+      </div>
+
+      <!-- Enrollment Assessment System -->
+      <div class="card" style="margin-bottom:1.5rem;">
+        <div class="card-title">Activity 4 — Enrollment Assessment System</div>
+        <div class="card-meta">Java Program | BSIT 2-3 | Eclipse IDE</div>
+        <div class="card-body">
+          A student enrollment system that computes a final score from an entrance 
+          exam (60%) and interview (40%), then uses nested if-else and switch-case 
+          to determine admission status and recommend a college program based on SHS strand.
+        </div>
+        <div class="code-block">
+<pre><span class="cm">// Final Score Computation</span>
+<span class="kw">double</span> finalScore = (entranceExam * <span class="num">0.60</span>) + (interview * <span class="num">0.40</span>);
+
+<span class="cm">// Nested If — Admission Result</span>
+<span class="kw">if</span> (firstScreening.equalsIgnoreCase(<span class="str">"Pass"</span>)) {
+  <span class="kw">if</span> (finalScore >= <span class="num">85</span>) admissionResult = <span class="str">"Admitted with Scholarship"</span>;
+  <span class="kw">else if</span> (finalScore >= <span class="num">75</span>) admissionResult = <span class="str">"Admitted"</span>;
+  <span class="kw">else if</span> (finalScore >= <span class="num">65</span>) admissionResult = <span class="str">"Waitlisted"</span>;
+  <span class="kw">else</span> admissionResult = <span class="str">"Not Qualified"</span>;
+} <span class="kw">else</span> admissionResult = <span class="str">"Not Qualified"</span>;
+
+<span class="cm">// Switch — Program Recommendation</span>
+<span class="kw">switch</span> (strand) {
+  <span class="kw">case</span> <span class="str">"STEM"</span>: recommendedProgram = <span class="str">"BSIT / BSCS"</span>; <span class="kw">break</span>;
+  <span class="kw">case</span> <span class="str">"ABM"</span>:  recommendedProgram = <span class="str">"BSBA"</span>; <span class="kw">break</span>;
+  <span class="kw">default</span>:   recommendedProgram = <span class="str">"General Program"</span>;
+}</pre>
+        </div>
+        <img src="assets/enrollment-output.png" alt="Enrollment Assessment Output" class="output-img"
+             onerror="this.outerHTML='<div class=\'img-placeholder\'><span>🖥️</span><span>Enrollment System Screenshot</span><strong>assets/enrollment-output.png</strong></div>'">
+        <ul class="learning-list" style="margin-top:1rem;">
+          <li>Nested if-else handles complex multi-condition decision logic</li>
+          <li>switch-case cleanly maps SHS strands to recommended college programs</li>
+          <li>Weighted score formula demonstrates arithmetic operators in real-world context</li>
+        </ul>
+        <div class="reflection">
+          "This program combined multiple OOP concepts — decision structures, string comparisons, 
+          and formatted output — into a real-world use case, which made it more meaningful to build."
+        </div>
+      </div>
+
+      <!-- Expense Tracker -->
+      <div class="card">
+        <div class="card-title">Activity 5 — Personal Expense Tracker</div>
+        <div class="card-meta">Java Program | April 16, 2026 | BSIT 2-3</div>
+        <div class="card-body">
+          A modular Java application that uses static methods to organize code into 
+          logical units: <code style="color:var(--cyan)">displayTitle()</code>, 
+          <code style="color:var(--cyan)">calculateTotalExpenses()</code>, 
+          <code style="color:var(--cyan)">checkBudgetStatus()</code>, 
+          and <code style="color:var(--cyan)">displaySummary()</code>. 
+          Demonstrates the use of methods — a core OOP principle.
+        </div>
+        <div class="code-block">
+<pre><span class="kw">public static double</span> <span class="fn">calculateTotalExpenses</span>(
+    <span class="kw">double</span> food, <span class="kw">double</span> transport, <span class="kw">double</span> other,
+    <span class="kw">double</span> utilities, <span class="kw">double</span> entertainment) {
+  <span class="kw">return</span> food + transport + other + entertainment + utilities;
+}
+
+<span class="kw">public static</span> String <span class="fn">checkBudgetStatus</span>(<span class="kw">double</span> total, <span class="kw">double</span> budget) {
+  <span class="kw">if</span> (total > budget)
+    <span class="kw">return</span> <span class="str">"⚠ WARNING: Budget Exceeded by PHP "</span> + (total - budget);
+  <span class="kw">else</span>
+    <span class="kw">return</span> <span class="str">"✔ GOOD JOB: You are within your budget!"</span>;
+}</pre>
+        </div>
+        <img src="assets/expense-output.png" alt="Expense Tracker Output" class="output-img"
+             onerror="this.outerHTML='<div class=\'img-placeholder\'><span>🖥️</span><span>Expense Tracker Screenshot</span><strong>assets/expense-output.png</strong></div>'">
+        <ul class="learning-list" style="margin-top:1rem;">
+          <li>Static methods allow code reuse without creating objects</li>
+          <li>Separating logic into methods makes the code modular and readable</li>
+          <li>printf() with format specifiers ensures clean, aligned output</li>
+          <li>Demonstrated budget analysis with conditional feedback messages</li>
+        </ul>
+        <div class="reflection">
+          "Breaking a program into multiple methods taught me how to think modularly — 
+          each method does one thing and does it well. This is the foundation of clean OOP design."
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ MIDTERM EXAM ══ -->
+    <div class="subsection reveal">
+      <div class="subsection-title">Midterm Exam</div>
+      <div class="card">
+        <div class="card-title">Midterm Examination</div>
+        <div class="card-meta">COMP 009 — Object Oriented Programming | BSIT 2-3</div>
+        <div class="editable-area">
+          <span class="icon">📝</span>
+          <strong>EXAM CONTENT — TO BE ADDED</strong>
+          <span style="font-size:0.82rem;">Replace this section with your exam answers, code, and reflection once available.</span>
+        </div>
+        <div class="reflection" style="margin-top:1.5rem;">
+          Exam reflection will be added here. Describe what topics were covered, 
+          how you approached the exam, and what you learned from the experience.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─── FINAL ─── -->
+<section id="final">
+  <div class="section-header reveal" style="text-align:center;">
+    <div class="section-tag">// section_03</div>
+    <h2 class="section-title">Final <span class="accent">Outputs</span></h2>
+    <div class="section-line" style="margin:1rem auto 0;"></div>
+  </div>
+  <div class="coming-soon reveal">
+    <div class="cs-icon">🚀</div>
+    <h3>Coming Soon</h3>
+    <p>
+      Final outputs will be added at the end of the semester. 
+      Stay tuned for more Java programs, activities, and a final exam reflection 
+      that showcase my continued growth in Object-Oriented Programming.
+    </p>
+  </div>
+</section>
+
+<!-- ─── CONTACT ─── -->
+<section id="contact">
+  <div class="section-header reveal" style="text-align:center;">
+    <div class="section-tag">// section_04</div>
+    <h2 class="section-title">Get in <span class="accent">Touch</span></h2>
+    <div class="section-line" style="margin:1rem auto 0;"></div>
+  </div>
+  <div class="contact-grid" style="margin-top:3rem;">
+    <div class="contact-info reveal">
+      <p>
+        I'm Ronald Novela, a second-year BSIT student at PUP with a passion 
+        for technology, learning, and building things that matter. 
+        Feel free to reach out!
+      </p>
+      <div class="contact-items">
+        <div class="contact-item">
+          <span class="ci-icon">🎓</span>
+          <div>
+            <div class="ci-label">School</div>
+            <div class="ci-value">Polytechnic University of the Philippines</div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <span class="ci-icon">📚</span>
+          <div>
+            <div class="ci-label">Course & Section</div>
+            <div class="ci-value">BSIT 2-3 — COMP 009 OOP</div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <span class="ci-icon">📧</span>
+          <div>
+            <div class="ci-label">Email</div>
+            <div class="ci-value">your.email@example.com</div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <span class="ci-icon">💻</span>
+          <div>
+            <div class="ci-label">GitHub</div>
+            <div class="ci-value">github.com/yourusername</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="reveal">
+      <div class="contact-code">
+        <pre><span style="color:#a78bfa">class</span> <span style="color:#67e8f9">RonaldNovela</span> {
+  <span style="color:#a78bfa">String</span> name    = <span style="color:#86efac">"Ronald S. Novela"</span>;
+  <span style="color:#a78bfa">String</span> school  = <span style="color:#86efac">"PUP Manila"</span>;
+  <span style="color:#a78bfa">String</span> course  = <span style="color:#86efac">"BSIT 2-3"</span>;
+  <span style="color:#a78bfa">String</span> subject = <span style="color:#86efac">"COMP 009 - OOP"</span>;
+
+  <span style="color:#a78bfa">String[]</span> traits = {
+    <span style="color:#86efac">"Athletic"</span>,
+    <span style="color:#86efac">"Curious"</span>,
+    <span style="color:#86efac">"Friendly"</span>
+  };
+
+  <span style="color:#a78bfa">String[]</span> goals = {
+    <span style="color:#86efac">"Cloud Computing"</span>,
+    <span style="color:#86efac">"Full Stack Dev"</span>,
+    <span style="color:#86efac">"Other Tech Skills"</span>
+  };
+}</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <span>Ronald S. Novela</span> &nbsp;•&nbsp; BSIT 2-3 &nbsp;•&nbsp; 
+  COMP 009 Object-Oriented Programming &nbsp;•&nbsp; 
+  Polytechnic University of the Philippines &nbsp;•&nbsp; AY 2025–2026
+</footer>
+
+<!-- ─── JS: Scroll Reveal ─── -->
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
